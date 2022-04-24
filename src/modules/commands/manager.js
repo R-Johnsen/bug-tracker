@@ -146,8 +146,10 @@ module.exports = class CommandManager {
 		const requiredBotPermissions = [
 			"AttachFiles",
 			"EmbedLinks",
-			"ManageChannels",
-			"ManageMessages"
+			"SendMessagse",
+			"ViewChannel",
+			"ReadMessageHistory",
+			"SendMessagesInThreads"
 		];
 
 		if (!botPermissions.has(requiredBotPermissions)) {
@@ -158,7 +160,7 @@ module.exports = class CommandManager {
 				await interaction.reply({
 					embeds: [
 						new EmbedBuilder()
-							.setColor("ORANGE")
+							.setColor(config.colors.error)
 							.setTitle("⚠️")
 							.setDescription(`${this.client.user.username} requires the following permissions:\n${perms}`)
 					],
@@ -166,7 +168,8 @@ module.exports = class CommandManager {
 				});
 			} else {
 				await interaction.reply({
-					content: `${this.client.user.username} requires the following permissions:\n${perms}`
+					content: `${this.client.user.username} requires the following permissions:\n${perms}`,
+					ephermal: true
 				});
 			}
 

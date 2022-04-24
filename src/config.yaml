@@ -1,0 +1,30 @@
+maxListeners: 10
+debugging: false
+
+colors:
+  default: 0x2F3136
+  success: 0x84F584
+  error: 0x202020
+  priority:
+    high: 0xe86864
+    medium: 0xe89d3a
+    low: 0x71d17f
+    none: 0x4a4a4a
+  status:
+    approved: 0x437B4B
+    rejected: 0xC74945
+    implemented: 0x5d97c9
+    considered: 0xf2e65e
+    fixed: 0x855dc9
+
+users:
+  developers: 
+    - "556206370429599755" # Archasion
+    - "697765709580599406" # Archasion 2
+
+presence:
+  randomize: true
+  duration: 60
+  options:
+    - type: PLAYING
+      activity: "/update"

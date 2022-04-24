@@ -27,7 +27,8 @@ module.exports = class ServerInfoCommand extends Command {
 		const settings = await Guilds.findOne({ id: interaction.guildId });
 		const { guild } = interaction;
 
-		const roles = guild.roles.cache.map(role => role).join(" ") || "None";
+		let roles = guild.roles.cache.map(role => role).join(" ") || "None";
+		if (roles.length > 1024) roles = "Too many roles";
 
 		const bugs = settings.bugs.length;
 		const reports = settings.reports.length;
@@ -81,10 +82,8 @@ module.exports = class ServerInfoCommand extends Command {
 					inline: true
 				},
 				{
-					name: "Bots",
-					value: guild.members.cache
-						.filter(member => member.user.bot)
-						.size.toString(),
+					name: "Emojis",
+					value: guild.emojis.cache.size.toString(),
 					inline: true
 				},
 				{

@@ -164,12 +164,12 @@ module.exports = class CommandManager {
 							.setTitle("⚠️")
 							.setDescription(`${this.client.user.username} requires the following permissions:\n${perms}`)
 					],
-					ephermal: true
+					ephemeral: true
 				});
 			} else {
 				await interaction.reply({
 					content: `${this.client.user.username} requires the following permissions:\n${perms}`,
-					ephermal: true
+					ephemeral: true
 				});
 			}
 

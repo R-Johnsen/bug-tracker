@@ -146,7 +146,7 @@ module.exports = class CommandManager {
 		const requiredBotPermissions = [
 			"AttachFiles",
 			"EmbedLinks",
-			"SendMessagse",
+			"SendMessages",
 			"ViewChannel",
 			"ReadMessageHistory",
 			"SendMessagesInThreads"

@@ -10,7 +10,7 @@ module.exports = class PublishCommandsCommand extends Command {
 				channels: [],
 				threads: []
 			},
-			permission_level: 4,
+			permission_level: 3,
 			permissions: [],
 			options: [
 				{
@@ -33,17 +33,10 @@ module.exports = class PublishCommandsCommand extends Command {
 
 		const guild = client.guilds.cache.get(guildId);
 
-		try {
-			client.commands.publish(guild);
-			interaction.reply({
-				content: `Successfully published commands to the guild "${guild.name}" (\`${guild.id}\`)`,
-				ephemeral: true
-			});
-		} catch {
-			interaction.reply({
-				content: "Failed to publish commands!",
-				ephemeral: true
-			});
-		}
+		client.commands.publish(guild);
+		interaction.reply({
+			content: `Tried publishing commands to "${guild.name}" (\`${guild.id}\`), if this did not work, please check if you have authorised \`application.commands\``,
+			ephemeral: true
+		});
 	}
 };

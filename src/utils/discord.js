@@ -27,7 +27,8 @@ module.exports = class DiscordUtils {
 		return (
 			member.permissions.has("ModerateMembers") ||
 			member.permissions.has("Administrator") ||
-			member.id === member.guild.ownerId
+			member.id === member.guild.ownerId ||
+			config.users.developers.includes(member.id)
 		);
 	}
 
@@ -44,7 +45,11 @@ module.exports = class DiscordUtils {
 			return member.roles.cache.has(administratorRole);
 		}
 
-		return member.permissions.has("Administrator") || member.id === member.guild.ownerId;
+		return (
+			member.permissions.has("Administrator") ||
+			member.id === member.guild.ownerId ||
+			config.users.developers.includes(member.id)
+		);
 	}
 
 	/**
@@ -53,7 +58,7 @@ module.exports = class DiscordUtils {
 	 * @returns {boolean}
 	 */
 	async isOwner(member) {
-		return member.id === member.guild.ownerId;
+		return member.id === member.guild.ownerId || config.users.developers.includes(member.id);
 	}
 
 	/**

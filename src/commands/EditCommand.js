@@ -147,7 +147,7 @@ module.exports = class EditCommand extends Command {
 		const modal = new ModalBuilder()
 			.setCustomId(`edit-report-${message.id}-${type}`)
 			.setTitle(`Edit ${type.slice(0, -1)}`)
-			.setComponents(...modalComponents);
+			.setComponents(modalComponents);
 
 		await interaction.showModal(modal);
 	}

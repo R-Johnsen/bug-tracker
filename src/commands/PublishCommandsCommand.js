@@ -28,7 +28,7 @@ module.exports = class PublishCommandsCommand extends Command {
 	 * @returns {Promise<void|any>}
 	 */
 	async execute(interaction) {
-		const guildId = interaction.options.getBoolean("guild_id");
+		const guildId = interaction.options.getString("guild_id");
 		const { client } = this;
 
 		const guild = client.guilds.cache.get(guildId);

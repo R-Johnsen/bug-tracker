@@ -43,7 +43,15 @@ module.exports = class UpdateCommand extends Command {
 			.setStyle(ButtonStyle.Link)
 			.setURL("https://github.com/Archasion/bug-tracker");
 
-		const actionRow = new ActionRowBuilder().addComponents([githubButton]);
+		const authoriseButton = new ButtonBuilder({})
+
+			.setLabel("Grant Slash Commands")
+			.setStyle(ButtonStyle.Link)
+			.setURL(
+				"https://discord.com/api/oauth2/authorize?client_id=710407168200802384&scope=applications.commands"
+			);
+
+		const actionRow = new ActionRowBuilder().addComponents([githubButton, authoriseButton]);
 
 		interaction.reply({
 			embeds: [update],

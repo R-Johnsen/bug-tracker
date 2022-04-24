@@ -66,9 +66,8 @@ module.exports = class CommandManager {
 			log.success(
 				`Published ${this.client.commands.commands.size} commands to "${guild.name}"`
 			);
-		} catch (error) {
+		} catch {
 			log.warn("An error occurred whilst publishing the commands");
-			log.error(error);
 		}
 	}
 

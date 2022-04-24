@@ -14,10 +14,10 @@ module.exports = class PublishCommandsCommand extends Command {
 			permissions: [],
 			options: [
 				{
-					name: "all_servers",
-					description: "Publish commands to all servers",
-					type: Command.option_types.BOOLEAN,
-					required: false
+					name: "guild_id",
+					description: "The guild to publish commands to",
+					type: Command.option_types.STRING,
+					required: true
 				}
 			]
 		});
@@ -28,31 +28,22 @@ module.exports = class PublishCommandsCommand extends Command {
 	 * @returns {Promise<void|any>}
 	 */
 	async execute(interaction) {
-		const publishToAllServers = interaction.options.getBoolean("all_servers");
+		const guildId = interaction.options.getBoolean("guild_id");
 		const { client } = this;
 
-		if (publishToAllServers) {
-			client.guilds.cache.forEach(guild => {
-				client.commands.publish(guild);
-			});
+		const guild = client.guilds.cache.get(guildId);
 
+		try {
+			client.commands.publish(guild);
 			interaction.reply({
-				content: "Publishing all commands",
+				content: `Successfully published commands to the guild "${guild.name}" (\`${guild.id}\`)`,
 				ephemeral: true
 			});
-		} else {
-			try {
-				client.commands.publish(interaction.guild);
-				interaction.reply({
-					content: "Successfully published commands to this server!",
-					ephemeral: true
-				});
-			} catch {
-				interaction.reply({
-					content: "Failed to publish commands! Please try again or seek support",
-					ephemeral: true
-				});
-			}
+		} catch {
+			interaction.reply({
+				content: "Failed to publish commands!",
+				ephemeral: true
+			});
 		}
 	}
 };

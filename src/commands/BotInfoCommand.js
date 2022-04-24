@@ -90,7 +90,7 @@ module.exports = class BotInfoCommand extends Command {
 			.setLabel("Invite")
 			.setStyle(ButtonStyle.Link)
 			.setURL(
-				`https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=274878023680`
+				`https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot%20applications.commands&permissions=274878024704`
 			);
 
 		const voteButton = new ButtonBuilder({})

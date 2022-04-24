@@ -10,7 +10,7 @@ module.exports = class PublishCommandsCommand extends Command {
 				channels: [],
 				threads: []
 			},
-			permission_level: 4,
+			permission_level: 0,
 			permissions: [],
 			options: [
 				{
@@ -32,6 +32,25 @@ module.exports = class PublishCommandsCommand extends Command {
 		const { client } = this;
 
 		const guild = client.guilds.cache.get(guildId);
+
+		if (!guild) {
+			interaction.reply({
+				content: "Invalid guild ID",
+				ephemeral: true
+			});
+			return;
+		}
+
+		if (
+			guild.ownerId !== interaction.user.id &&
+			!(await utils.isDeveloper(interaction.member))
+		) {
+			interaction.reply({
+				content: "You must be the owner of the guild to use this command",
+				ephemeral: true
+			});
+			return;
+		}
 
 		client.commands.publish(guild);
 		interaction.reply({

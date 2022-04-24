@@ -10,7 +10,7 @@ module.exports = class PublishCommandsCommand extends Command {
 				channels: [],
 				threads: []
 			},
-			permission_level: 3,
+			permission_level: 4,
 			permissions: [],
 			options: [
 				{

@@ -34,7 +34,7 @@ module.exports = class BotInfoCommand extends Command {
 
 			.setColor(config.colors.default)
 			.setAuthor({ name: client.user.tag, iconURL: client.user.avatarURL() })
-			.setFields(
+			.setFields([
 				{
 					name: "Created",
 					value: `<t:${parseInt(client.user.createdTimestamp / 1000)}:R>`,
@@ -70,7 +70,7 @@ module.exports = class BotInfoCommand extends Command {
 					value: `\`${permissions}\``,
 					inline: false
 				}
-			);
+			]);
 
 		const githubButton = new ButtonBuilder({})
 
@@ -97,12 +97,12 @@ module.exports = class BotInfoCommand extends Command {
 			.setStyle(ButtonStyle.Link)
 			.setURL(`https://top.gg/bot/${client.user.id}`);
 
-		const actionRow = new ActionRowBuilder().addComponents(
+		const actionRow = new ActionRowBuilder().addComponents([
 			githubButton,
 			supportButton,
 			inviteButton,
 			voteButton
-		);
+		]);
 
 		interaction.reply({
 			embeds: [info],

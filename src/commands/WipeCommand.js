@@ -74,7 +74,8 @@ module.exports = class WipeCommand extends Command {
 						bugs_channel: null,
 						reports_channel: null,
 						suggestions_channel: null,
-						archive_channel: null
+						archive_channel: null,
+						bot_updates_channel: null
 					}
 				}
 			);
@@ -86,7 +87,8 @@ module.exports = class WipeCommand extends Command {
 				{
 					$set: {
 						moderator_role: null,
-						administrator_role: null
+						administrator_role: null,
+						auto_role: null
 					}
 				}
 			);

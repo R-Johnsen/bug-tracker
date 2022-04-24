@@ -154,11 +154,11 @@ module.exports = class ReportCommand extends Command {
 		}
 
 		components.forEach(component => {
-			const actionRow = new ActionRowBuilder().addComponents(component);
+			const actionRow = new ActionRowBuilder().addComponents([component]);
 			actionRows.push(actionRow);
 		});
 
-		form.addComponents(...actionRows);
+		form.addComponents(actionRows);
 		await interaction.showModal(form);
 	}
 };

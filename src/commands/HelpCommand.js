@@ -65,7 +65,7 @@ module.exports = class HelpCommand extends Command {
 					.setColor(config.colors.default)
 					.setTitle("Help")
 					.setDescription("The commands you have access to are listed below.")
-					.addFields({ name: "Commands", value: listOfCommands.join("\n") })
+					.setFields([{ name: "Commands", value: listOfCommands.join("\n") }])
 			],
 			ephemeral: true
 		});

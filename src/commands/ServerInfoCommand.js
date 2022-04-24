@@ -39,7 +39,7 @@ module.exports = class ServerInfoCommand extends Command {
 			.setThumbnail(guild.iconURL({ dynamic: true }))
 			.setImage(guild.bannerURL({ dynamic: true }))
 			.setFooter({ text: `ID: ${guild.id}` })
-			.setFields(
+			.setFields([
 				{
 					name: "Created",
 					value: `<t:${parseInt(guild.createdTimestamp / 1000, 10)}:R>`,
@@ -92,7 +92,7 @@ module.exports = class ServerInfoCommand extends Command {
 					value: roles,
 					inline: true
 				}
-			);
+			]);
 
 		interaction.reply({
 			embeds: [info],

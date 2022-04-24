@@ -53,11 +53,11 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				.setLabel("Archive")
 				.setStyle(ButtonStyle.Secondary);
 
-			const reportActionRow = new ActionRowBuilder().addComponents(
+			const reportActionRow = new ActionRowBuilder().addComponents([
 				approveButton,
 				rejectButton,
 				archiveButton
-			);
+			]);
 
 			// ANCHOR Report Bug
 			if (customId.startsWith("report-bug")) {
@@ -68,7 +68,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				const report = new EmbedBuilder()
 
-					.addFields(
+					.setFields([
 						{
 							name: "Summary",
 							value: summary,
@@ -84,7 +84,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							value: specs,
 							inline: false
 						}
-					)
+					])
 					.setColor(config.colors.priority[priority.toLowerCase()])
 					.setTitle("Bug Report")
 					.setAuthor({ name: `Priority: ${priority}` })
@@ -132,7 +132,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				const report = new EmbedBuilder()
 
-					.addFields(
+					.setFields([
 						{
 							name: "Reported Player",
 							value: player,
@@ -143,7 +143,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							value: reason,
 							inline: false
 						}
-					)
+					])
 					.setColor(config.colors.default)
 					.setTitle("Player Report")
 					.setFooter({ text: `#${settings.reports.length + 1}` })
@@ -186,11 +186,13 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				const embed = new EmbedBuilder()
 
-					.addFields({
-						name: "Suggestion",
-						value: suggestion,
-						inline: false
-					})
+					.setFields([
+						{
+							name: "Suggestion",
+							value: suggestion,
+							inline: false
+						}
+					])
 					.setColor(config.colors.default)
 					.setFooter({ text: `#${settings.suggestions.length + 1}` })
 					.setThumbnail(interaction.member.user.displayAvatarURL({ dynamic: true }))

@@ -64,7 +64,7 @@ module.exports = class UserInfoCommand extends Command {
 				name: member.user.tag,
 				iconURL: member.user.displayAvatarURL({ dynamic: true })
 			})
-			.setFields(
+			.setFields([
 				{
 					name: "Created",
 					value: `<t:${parseInt(member.user.createdTimestamp / 1000, 10)}:R>`,
@@ -105,14 +105,14 @@ module.exports = class UserInfoCommand extends Command {
 					value: `\`${permissions}\``,
 					inline: false
 				}
-			);
+			]);
 
 		const avatarButton = new ButtonBuilder({})
 			.setLabel("Avatar")
 			.setStyle(ButtonStyle.Link)
 			.setURL(member.displayAvatarURL({ dynamic: true }));
 
-		const actionRow = new ActionRowBuilder().addComponents(avatarButton);
+		const actionRow = new ActionRowBuilder().addComponents([avatarButton]);
 
 		interaction.reply({
 			content: `${member}`,

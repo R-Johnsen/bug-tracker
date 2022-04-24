@@ -38,7 +38,7 @@ module.exports = class RoleInfoCommand extends Command {
 			.setTitle(role.name)
 			.setThumbnail(role.iconURL())
 			.setFooter({ text: `ID: ${role.id}` })
-			.setFields(
+			.setFields([
 				{
 					name: "Created",
 					value: `<t:${parseInt(role.createdTimestamp / 1000, 10)}:R>`,
@@ -74,7 +74,7 @@ module.exports = class RoleInfoCommand extends Command {
 					value: `\`${permissions}\``,
 					inline: false
 				}
-			);
+			]);
 
 		interaction.reply({
 			embeds: [info],

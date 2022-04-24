@@ -53,9 +53,9 @@ module.exports = class SuggestCommand extends Command {
 			return;
 		}
 
-		const actionRow = new ActionRowBuilder().addComponents(suggestion);
+		const actionRow = new ActionRowBuilder().addComponents([suggestion]);
 
-		form.addComponents(actionRow);
+		form.addComponents([actionRow]);
 		await interaction.showModal(form);
 	}
 };

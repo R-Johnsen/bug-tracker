@@ -139,7 +139,7 @@ module.exports = class EditCommand extends Command {
 					inputField.setStyle(TextInputStyle.Paragraph);
 				}
 
-				const actionRow = new ActionRowBuilder().addComponents(inputField);
+				const actionRow = new ActionRowBuilder().addComponents([inputField]);
 				modalComponents.push(actionRow);
 			}
 		});

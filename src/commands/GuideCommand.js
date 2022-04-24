@@ -1,4 +1,11 @@
 const Command = require("../modules/commands/command");
+const { EmbedBuilder, Attachment } = require("discord.js");
+
+const formImage = {
+	bug: new Attachment("images/bug-form.png", "bug.png"),
+	player: new Attachment("images/player-form.png", "player.png"),
+	suggestion: new Attachment("images/suggestion-form.png", "suggestion.png")
+};
 
 module.exports = class GuideCommand extends Command {
 	constructor(client) {
@@ -21,7 +28,7 @@ module.exports = class GuideCommand extends Command {
 					choices: [
 						{
 							name: "How to Report Bugs",
-							value: "bugs"
+							value: "bug"
 						},
 						{
 							name: "How to Report Player",
@@ -29,7 +36,7 @@ module.exports = class GuideCommand extends Command {
 						},
 						{
 							name: "How to Suggest",
-							value: "suggest"
+							value: "suggestion"
 						}
 					]
 				},
@@ -49,10 +56,47 @@ module.exports = class GuideCommand extends Command {
 	 */
 	async execute(interaction) {
 		let publicMessage = interaction.options.getBoolean("public") || false;
+		const type = interaction.options.getString("guide");
+
 		if (!(await utils.isModerator(interaction.member)) && publicMessage) publicMessage = false;
 
+		let guide;
+
+		// prettier-ignore
+		if (type === "bug" || type === "player") {
+			guide = new EmbedBuilder()
+
+				.setColor(config.colors.default)
+				.setTitle(`${type.charAt(0).toUpperCase()}${type.slice(1)} Reporting Guide`)
+				.setDescription(`Want to report a ${type}? Here's how to do it!\n\nAll you need to do is use the command written below, fill out the form and submit the ${type} report!`)
+				.setFields([
+					{
+						name: "Command",
+						value: `\`/report ${type}\`${type === "bug" ? " (optional: `priority`)" : ""}`
+					}
+				]);
+		}
+
+		// prettier-ignore
+		if (type === "suggestion") {
+			guide = new EmbedBuilder()
+
+				.setColor(config.colors.default)
+				.setTitle("Suggestion Guide")
+				.setDescription("Want to suggest something? Here's how to do it!\n\nAll you need to do is use the command written below, fill out the form and submit the suggestion!")
+				.setFields([
+					{
+						name: "Command",
+						value: "`/suggest`"
+					}
+				]);
+		}
+
+		guide.setImage(`attachment://${type}.png`);
+
 		interaction.reply({
-			content: "Coming soon...",
+			embeds: [guide],
+			files: [formImage[type]],
 			ephemeral: !publicMessage
 		});
 	}

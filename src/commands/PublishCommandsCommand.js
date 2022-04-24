@@ -32,24 +32,27 @@ module.exports = class PublishCommandsCommand extends Command {
 		const { client } = this;
 
 		if (publishToAllServers) {
-			client.commands.publish();
+			client.guilds.cache.forEach(guild => {
+				client.commands.publish(guild);
+			});
+
 			interaction.reply({
 				content: "Publishing all commands",
 				ephemeral: true
 			});
-		}
-
-		try {
-			client.commands.publish(interaction.guild);
-			interaction.reply({
-				content: "Successfully published commands to this server!",
-				ephemeral: true
-			});
-		} catch {
-			interaction.reply({
-				content: "Failed to publish commands! Please try again or seek support",
-				ephemeral: true
-			});
+		} else {
+			try {
+				client.commands.publish(interaction.guild);
+				interaction.reply({
+					content: "Successfully published commands to this server!",
+					ephemeral: true
+				});
+			} catch {
+				interaction.reply({
+					content: "Failed to publish commands! Please try again or seek support",
+					ephemeral: true
+				});
+			}
 		}
 	}
 };

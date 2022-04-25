@@ -82,8 +82,8 @@ module.exports = class ServerInfoCommand extends Command {
 					inline: true
 				},
 				{
-					name: "Emojis",
-					value: guild.emojis.cache.size.toString(),
+					name: "Server Boosts",
+					value: guild.premiumSubscriptionCount.toString(),
 					inline: true
 				},
 				{

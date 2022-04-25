@@ -9,7 +9,7 @@ module.exports = class GuildCreateEventListener extends EventListener {
 	async execute(guild) {
 		this.client.commands.publish(guild);
 
-		Guilds.findOne({ id: guild.id }, (err, settings) => {
+		await Guilds.findOne({ id: guild.id }, (err, settings) => {
 			if (err) {
 				log.error(err);
 				return;

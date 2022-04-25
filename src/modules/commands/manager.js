@@ -1,5 +1,6 @@
 const { Collection, EmbedBuilder, ApplicationCommandPermissionType } = require("discord.js");
 const Guilds = require("./../../mongodb/models/guilds");
+const Dev = require("./../../mongodb/models/dev");
 
 const fs = require("fs");
 const { path } = require("../../utils/fs");
@@ -196,7 +197,43 @@ module.exports = class CommandManager {
 
 		const settings = await Guilds.findOne({ id: interaction.guildId });
 
-		// Managed the permission level
+		// Manage the blacklist
+		const devConfig = await Dev.find();
+		const { blacklist } = devConfig[0];
+
+		if (!(await utils.isDeveloper(interaction.member))) {
+			for (const blacklistedId of blacklist.guilds) {
+				if (interaction.guildId === blacklistedId) {
+					interaction.reply({
+						content: "This guild is blacklisted from using this bot",
+						ephemeral: true
+					});
+					return;
+				}
+			}
+
+			for (const blacklistedId of blacklist.roles) {
+				if (interaction.member.roles.cache.has(blacklistedId)) {
+					interaction.reply({
+						content: "Your role is blacklisted from using this bot",
+						ephemeral: true
+					});
+					return;
+				}
+			}
+
+			for (const blacklistedId of blacklist.users) {
+				if (interaction.user.id === blacklistedId) {
+					interaction.reply({
+						content: "You are blacklisted from using this bot",
+						ephemeral: true
+					});
+					return;
+				}
+			}
+		}
+
+		// Manage the permission level
 		switch (command.permission_level) {
 			case 1:
 				const moderatorRole = settings.moderator_role;

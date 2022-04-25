@@ -33,7 +33,7 @@ module.exports = class PublishCommandsCommand extends Command {
 
 		if (interaction.guild.id === guildId) {
 			interaction.reply({
-				content: "Slash commands have already been published into the servers",
+				content: "Slash commands have already been published into the server",
 				ephemeral: true
 			});
 			return;

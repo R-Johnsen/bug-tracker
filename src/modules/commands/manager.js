@@ -286,7 +286,7 @@ module.exports = class CommandManager {
 
 		// prettier-ignore
 		try {
-			log.commands(`Executing "${command.name}" command (invoked by ${interaction.user.tag})`);
+			log.commands(`Executing "${command.name}" command (invoked by ${interaction.user.tag} in "${interaction.guild.name}" - ${interaction.guild.id})`);
 			await command.execute(interaction);
 		} catch (error) {
 			log.warn(`An error occurred whilst executing the ${command.name} command`);

@@ -31,6 +31,14 @@ module.exports = class PublishCommandsCommand extends Command {
 		const guildId = interaction.options.getString("guild_id");
 		const { client } = this;
 
+		if (interaction.guild.id === guildId) {
+			interaction.reply({
+				content: "Slash commands have already been published into the servers",
+				ephemeral: true
+			});
+			return;
+		}
+
 		const guild = client.guilds.cache.get(guildId);
 
 		if (!guild) {

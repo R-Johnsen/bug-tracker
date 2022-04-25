@@ -27,8 +27,8 @@ module.exports = class ReadyEventListener extends EventListener {
 			}, config.presence.duration * 1000);
 		}
 
-		this.client.guilds.cache.forEach(async guild => {
-			await Guilds.findOne({ id: guild.id }, (err, settings) => {
+		this.client.guilds.cache.forEach(guild => {
+			Guilds.findOne({ id: guild.id }, (err, settings) => {
 				if (err) {
 					log.error(err);
 					return;

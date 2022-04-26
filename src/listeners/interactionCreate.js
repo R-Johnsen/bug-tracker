@@ -47,15 +47,28 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				.setLabel("Reject")
 				.setStyle(ButtonStyle.Danger);
 
+			const discussionThreadButton = new ButtonBuilder({})
+
+				.setCustomId("report-discussion-thread")
+				.setLabel("Discussion Thread")
+				.setStyle(ButtonStyle.Secondary);
+
 			const archiveButton = new ButtonBuilder({})
 
 				.setCustomId("archive-report")
 				.setLabel("Archive")
 				.setStyle(ButtonStyle.Secondary);
 
+			const reportPlayerActionRow = new ActionRowBuilder().addComponents([
+				approveButton,
+				rejectButton,
+				archiveButton
+			]);
+
 			const reportActionRow = new ActionRowBuilder().addComponents([
 				approveButton,
 				rejectButton,
+				discussionThreadButton,
 				archiveButton
 			]);
 
@@ -155,7 +168,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.send({
 						content: `${interaction.member} (\`${interaction.user.tag}\`)`,
 						embeds: [report],
-						components: [reportActionRow]
+						components: [reportPlayerActionRow]
 					})
 					.then(async message => {
 						await Guilds.updateOne(
@@ -198,8 +211,35 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.setThumbnail(interaction.member.user.displayAvatarURL({ dynamic: true }))
 					.setTimestamp();
 
-				interaction.guild.channels.cache
-					.get(settings.suggestions_channel)
+				const suggestionChannel = interaction.guild.channels.cache.get(
+					settings.suggestions_channel
+				);
+
+				if (!suggestionChannel) {
+					interaction.reply({
+						content: "The suggestion channel no longer exists.",
+						ephemeral: true
+					});
+					return;
+				}
+
+				const suggestingPermissions = [
+					"SendMessages",
+					"ReadMessageHistory",
+					"EmbedLinks",
+					"ViewChannel"
+				];
+
+				// prettier-ignore
+				if (!interaction.guild.me.permissionsIn(suggestionChannel).has(suggestingPermissions)) {
+					interaction.reply({
+						content: `I need the following permissions in ${suggestionChannel}:\n\`${suggestingPermissions.join("` `")}\``,
+						ephemeral: true
+					});
+					return;
+				}
+
+				suggestionChannel
 					.send({
 						content: `${interaction.member} (\`${interaction.user.tag}\`)`,
 						embeds: [embed],
@@ -268,6 +308,79 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 		// ANCHOR Buttons
 		else if (interaction.isButton()) {
+			if (customId === "report-discussion-thread") {
+				if (!(await utils.isModerator(interaction.member))) {
+					if (!settings.moderator_role) {
+						interaction.reply({
+							content: "You need the `Moderate Members` permission to use this interaction.",
+							ephemeral: true
+						});
+						return;
+					}
+
+					interaction.reply({
+						content: `You need the <@&${settings.moderator_role}> role to use this interaction.`,
+						ephemeral: true
+					});
+					return;
+				}
+
+				// prettier-ignore
+				if (!interaction.guild.me.permissionsIn(interaction.channel).has("CreatePublicThreads")) {
+					interaction.reply({
+						content: "I don't have the permissions to create a thread (`CreatePublicThreads`)",
+						ephemeral: true
+					});
+					return;
+				}
+
+				if (interaction.message.hasThread) {
+					interaction.reply({
+						content: "This message already has a thread.",
+						ephemeral: true
+					});
+					return;
+				}
+
+				let threadName;
+				let type;
+
+				for (const item of settings.suggestions) {
+					if (item.messageId === interaction.message.id) {
+						threadName = item.suggestion;
+						type = "suggestion";
+						break;
+					}
+				}
+
+				for (const item of settings.bugs) {
+					if (item.messageId === interaction.message.id) {
+						threadName = item.summary;
+						type = "bug";
+						break;
+					}
+				}
+
+				if (!threadName) {
+					interaction.reply({
+						content: "I couldn't find the information required to make a discussion thread",
+						ephemeral: true
+					});
+					return;
+				}
+
+				interaction.message.startThread({
+					name: threadName,
+					autoArchiveDuration: "MAX",
+					reason: "Started a discussion thread for a report/suggestion"
+				});
+
+				interaction.reply({
+					content: `Started a discussion thread for ${type} **${interaction.message.embeds[0].data.footer.text}**`,
+					ephemeral: true
+				});
+			}
+
 			if (customId === "approve-report" || customId === "reject-report") {
 				if (!(await utils.isModerator(interaction.member))) {
 					if (!settings.moderator_role) {
@@ -388,6 +501,22 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				const { message } = interaction;
 				const embed = message.embeds[0].data;
+
+				// prettier-ignore
+				if (message.thread) {
+					if (!interaction.guild.me.permissionsIn(interaction.channel).has("ManageThreads")) {
+						interaction.reply({
+							content: "I need the `ManageThreads` permission to archive this report/suggestion.",
+							ephemeral: true
+						});
+						return;
+					}
+
+					await message.thread.edit({
+						archived: true,
+						locked: true
+					});
+				}
 
 				interaction.guild.channels.cache.get(settings.archive_channel).send({
 					content: message.content,

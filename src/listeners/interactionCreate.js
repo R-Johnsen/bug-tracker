@@ -87,7 +87,12 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					bot_updates_channel: { $ne: null }
 				});
 
-				publishingGuilds.forEach(item => {
+				interaction.reply({
+					content: "Publishing message to guilds...",
+					ephemeral: true
+				});
+
+				for (const item of publishingGuilds) {
 					const announcementChannel = this.client.channels.cache.get(
 						item.bot_updates_channel
 					);
@@ -97,7 +102,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							embeds: [announcement]
 						});
 					}
-				});
+				}
 			}
 
 			// ANCHOR Report Bug

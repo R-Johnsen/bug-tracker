@@ -347,7 +347,10 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				for (const item of settings.suggestions) {
 					if (item.messageId === interaction.message.id) {
-						threadName = item.suggestion;
+						threadName =
+							item.suggestion.length > 97
+								? `${item.suggestion.slice(0, 97)}...`
+								: item.suggestion;
 						type = "suggestion";
 						break;
 					}
@@ -355,7 +358,10 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				for (const item of settings.bugs) {
 					if (item.messageId === interaction.message.id) {
-						threadName = item.summary;
+						threadName =
+							item.summary.length > 97
+								? `${item.summary.slice(0, 97)}...`
+								: item.summary;
 						type = "bug";
 						break;
 					}

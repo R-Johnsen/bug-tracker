@@ -1,10 +1,11 @@
 const Command = require("../modules/commands/command");
+const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
 
 module.exports = class AnnounceCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: "announce",
-			description: "Notify server regarding certain updates",
+			description: "Notify servers regarding certain updates",
 			ignored: {
 				roles: [],
 				channels: [],
@@ -12,14 +13,7 @@ module.exports = class AnnounceCommand extends Command {
 			},
 			permission_level: 4,
 			permissions: [],
-			options: [
-				{
-					name: "message",
-					description: "The message to send",
-					type: Command.option_types.STRING,
-					required: true
-				}
-			]
+			options: []
 		});
 	}
 
@@ -28,20 +22,32 @@ module.exports = class AnnounceCommand extends Command {
 	 * @returns {Promise<void|any>}
 	 */
 	async execute(interaction) {
-		const message = interaction.options.getString("message");
-		const { client } = this;
+		const title = new TextInputBuilder()
 
-		client.guilds.cache.forEach(async guild => {
-			const owner = await guild.members.fetch(guild.ownerId);
+			.setCustomId("title")
+			.setLabel("Annnouncement Header")
+			.setRequired(true)
+			.setValue("")
+			.setStyle(TextInputStyle.Short)
+			.setPlaceholder("Announcement header...");
 
-			owner.send(message).catch(() => {
-				log.warn(`Failed to send message to ${owner.user.tag}`);
-			});
-		});
+		const description = new TextInputBuilder()
 
-		interaction.reply({
-			content: "Message sent to all servers!",
-			ephemeral: true
-		});
+			.setCustomId("description")
+			.setLabel("Annnouncement Description")
+			.setRequired(true)
+			.setValue("")
+			.setStyle(TextInputStyle.Paragraph)
+			.setPlaceholder("Announcement description...");
+
+		const titleActionRow = new ActionRowBuilder().addComponents([title]);
+		const descriptionActionRow = new ActionRowBuilder().addComponents([description]);
+
+		const form = new ModalBuilder()
+			.setCustomId("bot-update-announcement")
+			.setTitle("Bot Update Annnouncement")
+			.addComponents([titleActionRow, descriptionActionRow]);
+
+		await interaction.showModal(form);
 	}
 };

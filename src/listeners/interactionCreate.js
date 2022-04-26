@@ -72,6 +72,34 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				archiveButton
 			]);
 
+			if (customId === "bot-update-announcement") {
+				const title = interaction.fields.getTextInputValue("title");
+				const description = interaction.fields.getTextInputValue("description");
+
+				const announcement = new EmbedBuilder()
+
+					.setColor(config.colors.default)
+					.setTitle(title)
+					.setDescription(description)
+					.setTimestamp();
+
+				const publishingGuilds = await Guilds.find({
+					bot_updates_channel: { $ne: null }
+				});
+
+				publishingGuilds.forEach(item => {
+					const announcementChannel = this.client.channels.cache.get(
+						item.bot_updates_channel
+					);
+
+					if (announcementChannel) {
+						announcementChannel.send({
+							embeds: [announcement]
+						});
+					}
+				});
+			}
+
 			// ANCHOR Report Bug
 			if (customId.startsWith("report-bug")) {
 				const summary = interaction.fields.getTextInputValue("summary");

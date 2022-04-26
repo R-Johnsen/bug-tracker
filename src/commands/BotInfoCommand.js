@@ -137,7 +137,7 @@ module.exports = class BotInfoCommand extends Command {
 			voteButton
 		]);
 
-		interaction.followUp({
+		interaction.editReply({
 			embeds: [info],
 			components: [actionRow],
 			ephemeral: true

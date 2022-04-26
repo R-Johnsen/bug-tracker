@@ -1,4 +1,6 @@
 const Command = require("../modules/commands/command");
+const Guilds = require("../mongodb/models/guilds");
+
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
 
 module.exports = class BotInfoCommand extends Command {
@@ -25,10 +27,24 @@ module.exports = class BotInfoCommand extends Command {
 		const permissions = interaction.guild.me.permissions.toArray().join("` `") || "None";
 		const { client } = this;
 
+		interaction.deferReply({ ephemeral: true });
+
 		let memberCount = 0;
 		client.guilds.cache.forEach(guild => {
 			memberCount += guild.memberCount;
 		});
+
+		const bugs = await Guilds.find({ bugs: { $ne: [] } });
+		const reports = await Guilds.find({ reports: { $ne: [] } });
+		const suggestions = await Guilds.find({ busuggestionsgs: { $ne: [] } });
+
+		let bugCount = 0;
+		let reportCount = 0;
+		let suggestionCount = 0;
+
+		for (const item of bugs) bugCount += item.bugs.length;
+		for (const item of reports) reportCount += item.reports.length;
+		for (const item of suggestions) suggestionCount += item.suggestions.length;
 
 		const info = new EmbedBuilder()
 
@@ -63,6 +79,21 @@ module.exports = class BotInfoCommand extends Command {
 				{
 					name: "Members",
 					value: memberCount.toString(),
+					inline: true
+				},
+				{
+					name: "Bug Reports",
+					value: bugCount.toString(),
+					inline: true
+				},
+				{
+					name: "Player Reports",
+					value: reportCount.toString(),
+					inline: true
+				},
+				{
+					name: "Suggestions",
+					value: suggestionCount.toString(),
 					inline: true
 				},
 				{
@@ -106,7 +137,7 @@ module.exports = class BotInfoCommand extends Command {
 			voteButton
 		]);
 
-		interaction.reply({
+		interaction.followUp({
 			embeds: [info],
 			components: [actionRow],
 			ephemeral: true

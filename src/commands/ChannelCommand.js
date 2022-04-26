@@ -93,7 +93,10 @@ module.exports = class ChannelCommand extends Command {
 					return;
 				}
 
-				if (channel.type !== ChannelType.GuildText) {
+				if (
+					channel.type !== ChannelType.GuildText &&
+					channel.type !== ChannelType.GuildNews
+				) {
 					interaction.reply({
 						content: "The channel you specified is not a text channel.",
 						ephemeral: true

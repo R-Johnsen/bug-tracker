@@ -150,6 +150,17 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 						components: [reportActionRow]
 					})
 					.then(async message => {
+						try {
+							message
+								.react("<:thumbsup:968494477524213821>")
+								.catch(() => message.react("👍"));
+							message
+								.react("<:thumbsdown:968494477369016400>")
+								.catch(() => message.react("👎"));
+						} catch {
+							log.warn("No reaction perms");
+						}
+
 						await Guilds.updateOne(
 							{ id: interaction.guildId },
 							{
@@ -282,6 +293,17 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 						components: [reportActionRow]
 					})
 					.then(async message => {
+						try {
+							message
+								.react("<:thumbsup:968494477524213821>")
+								.catch(() => message.react("👍"));
+							message
+								.react("<:thumbsdown:968494477369016400>")
+								.catch(() => message.react("👎"));
+						} catch {
+							log.warn("No reaction perms");
+						}
+
 						await Guilds.updateOne(
 							{ id: interaction.guildId },
 							{

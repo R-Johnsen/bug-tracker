@@ -101,6 +101,9 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 						announcementChannel.send({
 							embeds: [announcement]
 						});
+						log.info(
+							`Published bot update to "${announcementChannel.guild.name}" (${announcementChannel.guild.id})`
+						);
 					}
 				}
 			}

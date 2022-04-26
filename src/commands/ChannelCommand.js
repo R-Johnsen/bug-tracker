@@ -83,6 +83,8 @@ module.exports = class ChannelCommand extends Command {
 		const action = interaction.options.getString("action");
 		const type = interaction.options.getString("type");
 
+		const dbVariable = `${type}_channel`;
+
 		switch (action) {
 			case "set":
 				if (!channel) {
@@ -93,10 +95,9 @@ module.exports = class ChannelCommand extends Command {
 					return;
 				}
 
-				if (
-					channel.type !== ChannelType.GuildText &&
-					channel.type !== ChannelType.GuildNews
-				) {
+				// prettier-ignore
+				// Only allow Text or Announcement (News) channels
+				if (channel.type !== ChannelType.GuildText && channel.type !== ChannelType.GuildNews) {
 					interaction.reply({
 						content: "The channel you specified is not a text channel.",
 						ephemeral: true
@@ -104,40 +105,25 @@ module.exports = class ChannelCommand extends Command {
 					return;
 				}
 
-				if (type === "bugs") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { bugs_channel: channel.id } }
-					);
-				}
+				const generalPermissions = ["SendMessages", "ViewChannel", "ReadMessageHistory"];
 
-				if (type === "reports") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { reports_channel: channel.id } }
-					);
-				}
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions, channel)) return;
 
-				if (type === "suggestions") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { suggestions_channel: channel.id } }
-					);
-				}
+				const suggestionBugPermissions = [
+					"CreatePublicThreads",
+					"ManageThreads",
+					"AddReactions",
+					"UseExternalEmojis"
+				];
 
-				if (type === "archive") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { archive_channel: channel.id } }
-					);
-				}
+				// prettier-ignore
+				if ((type === "bugs" || type === "suggestions") && await utils.insufficientPermissions(interaction, suggestionBugPermissions, channel)) return;
 
-				if (type === "bot_updates") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { bot_updates_channel: channel.id } }
-					);
-				}
+				await Guilds.updateOne(
+					{ id: interaction.guildId },
+					{ $set: { [dbVariable]: channel.id } }
+				);
 
 				interaction.reply({
 					content: `The **${type}** channel has been set to ${channel}.`,
@@ -147,40 +133,10 @@ module.exports = class ChannelCommand extends Command {
 				break;
 
 			case "reset":
-				if (type === "bugs") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { bugs_channel: null } }
-					);
-				}
-
-				if (type === "reports") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { reports_channel: null } }
-					);
-				}
-
-				if (type === "suggestions") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { suggestions_channel: null } }
-					);
-				}
-
-				if (type === "archive") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { suggestions_channel: null } }
-					);
-				}
-
-				if (type === "bot_updates") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { bot_updates_channel: null } }
-					);
-				}
+				await Guilds.updateOne(
+					{ id: interaction.guildId },
+					{ $set: { [dbVariable]: null } }
+				);
 
 				interaction.reply({
 					content: `The **${type}** channel has been reset.`,
@@ -191,7 +147,7 @@ module.exports = class ChannelCommand extends Command {
 
 			case "view":
 				const settings = await Guilds.findOne({ id: interaction.guildId });
-				const channelId = settings[`${type}_channel`];
+				const channelId = settings[dbVariable];
 
 				// prettier-ignore
 				if (!channelId) {

@@ -28,12 +28,13 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 		const { customId } = interaction;
 		log.debug(interaction);
 
-		// ANCHOR Slash Commands
+		// SECTION Slash Commands
 		if (interaction.isChatInputCommand()) {
 			this.client.commands.handle(interaction);
 		}
+		// !SECTION
 
-		// ANCHOR Modals
+		// SECTION Modals
 		else if (interaction.isModalSubmit()) {
 			const approveButton = new ButtonBuilder({})
 
@@ -110,6 +111,32 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 			// ANCHOR Report Bug
 			if (customId.startsWith("report-bug")) {
+				const submissionChannel = interaction.guild.channels.cache.get(
+					settings.bugs_channel
+				);
+
+				if (!submissionChannel) {
+					interaction.reply({
+						content: "The bug report submission channel cannot be found.",
+						ephemeral: true
+					});
+					return;
+				}
+
+				const generalPermissions = [
+					"SendMessages",
+					"ViewChannel",
+					"ReadMessageHistory",
+					"EmbedLinks",
+					"AddReactions",
+					"UseExternalEmojis",
+					"CreatePublicThreads",
+					"ManageThreads"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
+
 				const summary = interaction.fields.getTextInputValue("summary");
 				const description = interaction.fields.getTextInputValue("description");
 				const specs = interaction.fields.getTextInputValue("specs");
@@ -141,8 +168,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.setThumbnail(`attachment://${priority}.png`)
 					.setTimestamp();
 
-				interaction.guild.channels.cache
-					.get(settings.bugs_channel)
+				submissionChannel
 					.send({
 						content: `${interaction.member} (\`${interaction.user.tag}\`)`,
 						embeds: [report],
@@ -152,10 +178,10 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.then(async message => {
 						try {
 							message
-								.react("<:thumbsup:968494477524213821>")
+								.react("968494477524213821")
 								.catch(() => message.react("👍"));
 							message
-								.react("<:thumbsdown:968494477369016400>")
+								.react("968494477369016400")
 								.catch(() => message.react("👎"));
 						} catch {
 							log.warn("No reaction perms");
@@ -187,6 +213,28 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 			// ANCHOR Report Player
 			if (customId === "report-player") {
+				const submissionChannel = interaction.guild.channels.cache.get(
+					settings.reports_channel
+				);
+
+				if (!submissionChannel) {
+					interaction.reply({
+						content: "The player report submission channel cannot be found.",
+						ephemeral: true
+					});
+					return;
+				}
+
+				const generalPermissions = [
+					"SendMessages",
+					"ViewChannel",
+					"ReadMessageHistory",
+					"EmbedLinks"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
+
 				const player = interaction.fields.getTextInputValue("player");
 				const reason = interaction.fields.getTextInputValue("reason");
 
@@ -210,8 +258,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.setThumbnail(interaction.member.user.displayAvatarURL({ dynamic: true }))
 					.setTimestamp();
 
-				interaction.guild.channels.cache
-					.get(settings.reports_channel)
+				submissionChannel
 					.send({
 						content: `${interaction.member} (\`${interaction.user.tag}\`)`,
 						embeds: [report],
@@ -242,6 +289,31 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 			// ANCHOR Suggestion
 			if (customId === "suggestion") {
+				const submissionChannel = interaction.guild.channels.cache.get(
+					settings.suggestions_channel
+				);
+
+				if (!submissionChannel) {
+					interaction.reply({
+						content: "The suggestion submission channel cannot be found.",
+						ephemeral: true
+					});
+					return;
+				}
+
+				const generalPermissions = [
+					"SendMessages",
+					"ViewChannel",
+					"ReadMessageHistory",
+					"EmbedLinks",
+					"AddReactions",
+					"UseExternalEmojis",
+					"CreatePublicThreads",
+					"ManageThreads"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
 				const suggestion = interaction.fields.getTextInputValue("suggestion");
 
 				const embed = new EmbedBuilder()
@@ -258,35 +330,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.setThumbnail(interaction.member.user.displayAvatarURL({ dynamic: true }))
 					.setTimestamp();
 
-				const suggestionChannel = interaction.guild.channels.cache.get(
-					settings.suggestions_channel
-				);
-
-				if (!suggestionChannel) {
-					interaction.reply({
-						content: "The suggestion channel no longer exists.",
-						ephemeral: true
-					});
-					return;
-				}
-
-				const suggestingPermissions = [
-					"SendMessages",
-					"ReadMessageHistory",
-					"EmbedLinks",
-					"ViewChannel"
-				];
-
-				// prettier-ignore
-				if (!interaction.guild.me.permissionsIn(suggestionChannel).has(suggestingPermissions)) {
-					interaction.reply({
-						content: `I need the following permissions in ${suggestionChannel}:\n\`${suggestingPermissions.join("` `")}\``,
-						ephemeral: true
-					});
-					return;
-				}
-
-				suggestionChannel
+				submissionChannel
 					.send({
 						content: `${interaction.member} (\`${interaction.user.tag}\`)`,
 						embeds: [embed],
@@ -295,10 +339,10 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.then(async message => {
 						try {
 							message
-								.react("<:thumbsup:968494477524213821>")
+								.react("968494477524213821")
 								.catch(() => message.react("👍"));
 							message
-								.react("<:thumbsdown:968494477369016400>")
+								.react("968494477369016400")
 								.catch(() => message.react("👎"));
 						} catch {
 							log.warn("No reaction perms");
@@ -329,9 +373,26 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 			if (customId.startsWith("edit-report")) {
 				const type = customId.split("-")[3];
 
-				const channel = interaction.guild.channels.cache.get(
-					settings[`${type}_channel`]
-				);
+				// prettier-ignore
+				const channel = interaction.guild.channels.cache.get(settings[`${type}_channel`]);
+
+				if (!channel) {
+					interaction.reply({
+						content: `Cannot find the ${type.slice(0, -1)} submission channel.`,
+						ephemeral: true
+					});
+					return;
+				}
+
+				const generalPermissions = [
+					"SendMessages",
+					"ViewChannel",
+					"ReadMessageHistory",
+					"EmbedLinks"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions, channel)) return;
 
 				const message = await channel.messages.fetch(customId.split("-")[2]);
 
@@ -340,6 +401,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 						content: "The message you are trying to edit does not exist anymore.",
 						ephemeral: true
 					});
+					return;
 				}
 
 				const embed = message.embeds[0].data;
@@ -350,7 +412,8 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				});
 
 				message.edit({
-					embeds: [embed]
+					embeds: [embed],
+					attachments: []
 				});
 
 				interaction.reply({
@@ -359,14 +422,27 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				});
 			}
 		}
+		// !SECTION
 
-		// ANCHOR Select Menu
+		// SECTION Select Menu
 		else if (interaction.isSelectMenu()) {
 		}
+		// !SECTION
 
-		// ANCHOR Buttons
+		// SECTION Buttons
 		else if (interaction.isButton()) {
+			// ANCHOR Discussion Thread
 			if (customId === "report-discussion-thread") {
+				const generalPermissions = [
+					"SendMessages",
+					"ViewChannel",
+					"ReadMessageHistory",
+					"CreatePublicThreads"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions)) return;
+
 				if (!(await utils.isModerator(interaction.member))) {
 					if (!settings.moderator_role) {
 						interaction.reply({
@@ -445,6 +521,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				});
 			}
 
+			// ANCHOR Approve/Reject
 			if (customId === "approve-report" || customId === "reject-report") {
 				if (!(await utils.isModerator(interaction.member))) {
 					if (!settings.moderator_role) {
@@ -461,6 +538,16 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					});
 					return;
 				}
+
+				const generalPermissions = [
+					"SendMessages",
+					"ViewChannel",
+					"ReadMessageHistory",
+					"EmbedLinks"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions)) return;
 
 				const embed = interaction.message.embeds[0].data;
 
@@ -555,7 +642,11 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					return;
 				}
 
-				if (!settings.archive_channel) {
+				const archiveChannel = interaction.guild.channels.cache.get(
+					settings.archive_channel
+				);
+
+				if (!archiveChannel) {
 					interaction.reply({
 						content: "There is no channel set for **archiving** reports/suggestions.\nYou can set one using `/channel set archive <channel>`",
 						ephemeral: true
@@ -563,26 +654,32 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					return;
 				}
 
+				const generalPermissions = [
+					"ViewChannel",
+					"ReadMessageHistory",
+					"EmbedLinks",
+					"ManageThreads"
+				];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, generalPermissions)) return;
+				const archivePermissions = ["ViewChannel", "EmbedLinks", "SendMessages"];
+
+				// prettier-ignore
+				if (await utils.insufficientPermissions(interaction, archivePermissions, archiveChannel)) return;
+
 				const { message } = interaction;
 				const embed = message.embeds[0].data;
 
 				// prettier-ignore
 				if (message.thread) {
-					if (!interaction.guild.me.permissionsIn(interaction.channel).has("ManageThreads")) {
-						interaction.reply({
-							content: "I need the `ManageThreads` permission to archive this report/suggestion.",
-							ephemeral: true
-						});
-						return;
-					}
-
 					await message.thread.edit({
 						archived: true,
 						locked: true
 					});
 				}
 
-				interaction.guild.channels.cache.get(settings.archive_channel).send({
+				archiveChannel.send({
 					content: message.content,
 					embeds: message.embeds,
 					components: []
@@ -597,5 +694,6 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				message.delete();
 			}
 		}
+		// !SECTION
 	}
 };

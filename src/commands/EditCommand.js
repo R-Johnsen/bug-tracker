@@ -84,6 +84,16 @@ module.exports = class EditCommand extends Command {
 			return;
 		}
 
+		const generalPermissions = [
+			"SendMessages",
+			"ViewChannel",
+			"ReadMessageHistory",
+			"EmbedLinks"
+		];
+
+		// prettier-ignore
+		if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
+
 		const message = await submissionChannel.messages.fetch(report.messageId).catch(() => {
 			interaction.reply({
 				content: `The message for ${type} with the ID of \`#${id}\` is either archived or deleted`,

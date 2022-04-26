@@ -143,40 +143,6 @@ module.exports = class CommandManager {
 			return;
 		}
 
-		const botPermissions = interaction.guild.me.permissionsIn(interaction.channel);
-		const requiredBotPermissions = [
-			"AttachFiles",
-			"EmbedLinks",
-			"SendMessages",
-			"ViewChannel",
-			"ReadMessageHistory",
-			"SendMessagesInThreads"
-		];
-
-		if (!botPermissions.has(requiredBotPermissions)) {
-			const perms = requiredBotPermissions.map(perm => `\`${perm}\``).join(", ");
-
-			// prettier-ignore
-			if (botPermissions.has("EmbedLinks")) {
-				await interaction.reply({
-					embeds: [
-						new EmbedBuilder()
-							.setColor(config.colors.error)
-							.setTitle("⚠️")
-							.setDescription(`${this.client.user.username} requires the following permissions:\n${perms}`)
-					],
-					ephemeral: true
-				});
-			} else {
-				await interaction.reply({
-					content: `${this.client.user.username} requires the following permissions:\n${perms}`,
-					ephemeral: true
-				});
-			}
-
-			return;
-		}
-
 		const missingPermissions =
 			command.permissions instanceof Array &&
 			!interaction.member.permissions.has(command.permissions);

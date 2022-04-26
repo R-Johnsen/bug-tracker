@@ -73,6 +73,8 @@ module.exports = class RoleCommand extends Command {
 		const role = interaction.options.getRole("role");
 		const type = interaction.options.getString("type");
 
+		const dbVariable = `${type}_role`;
+
 		switch (action) {
 			case "set":
 				if (!role) {
@@ -83,26 +85,10 @@ module.exports = class RoleCommand extends Command {
 					return;
 				}
 
-				if (type === "auto") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { auto_role: role.id } }
-					);
-				}
-
-				if (type === "moderator") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { moderator_role: role.id } }
-					);
-				}
-
-				if (type === "administrator") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { administrator_role: role.id } }
-					);
-				}
+				await Guilds.updateOne(
+					{ id: interaction.guildId },
+					{ $set: { [dbVariable]: role.id } }
+				);
 
 				interaction.reply({
 					content: `The **${type}** role has been set to ${role}.`,
@@ -112,26 +98,10 @@ module.exports = class RoleCommand extends Command {
 				break;
 
 			case "reset":
-				if (type === "auto") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { auto_role: null } }
-					);
-				}
-
-				if (type === "moderator") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { moderator_role: null } }
-					);
-				}
-
-				if (type === "administrator") {
-					await Guilds.updateOne(
-						{ id: interaction.guildId },
-						{ $set: { administrator_role: null } }
-					);
-				}
+				await Guilds.updateOne(
+					{ id: interaction.guildId },
+					{ $set: { [dbVariable]: null } }
+				);
 
 				interaction.reply({
 					content: `The **${type}** role has been reset.`,
@@ -142,7 +112,7 @@ module.exports = class RoleCommand extends Command {
 
 			case "view":
 				const settings = await Guilds.findOne({ id: interaction.guildId });
-				const roleId = settings[`${type}_role`];
+				const roleId = settings[dbVariable];
 
 				if (!roleId) {
 					interaction.reply({

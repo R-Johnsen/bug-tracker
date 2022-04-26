@@ -121,6 +121,16 @@ module.exports = class StatusCommand extends Command {
 
 		const submissionChannel = interaction.guild.channels.cache.get(settings[`${type}_channel`]);
 
+		const generalPermissions = [
+			"SendMessages",
+			"ViewChannel",
+			"ReadMessageHistory",
+			"EmbedLinks"
+		];
+
+		// prettier-ignore
+		if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
+
 		if (!submissionChannel) {
 			interaction.reply({
 				content: `There is no submission channel set for ${type}`,

@@ -25,8 +25,29 @@ module.exports = class SuggestCommand extends Command {
 	 */
 	async execute(interaction) {
 		const settings = await Guilds.findOne({ id: interaction.guildId });
+		const submissionChannel = interaction.guild.channels.cache.get(settings.suggestions_channel);
 
-		let submissionChannel;
+		if (!submissionChannel) {
+			interaction.reply({
+				content: "There is no channel set for **suggestions**.\nPlease set one using `/channel set suggestions <channel>`",
+				ephemeral: true
+			});
+			return;
+		}
+
+		const generalPermissions = [
+			"SendMessages",
+			"ViewChannel",
+			"ReadMessageHistory",
+			"EmbedLinks",
+			"AddReactions",
+			"UseExternalEmojis",
+			"CreatePublicThreads",
+			"ManageThreads"
+		];
+
+		// prettier-ignore
+		if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
 
 		const suggestion = new TextInputBuilder()
 
@@ -39,20 +60,7 @@ module.exports = class SuggestCommand extends Command {
 			.setValue("")
 			.setStyle(TextInputStyle.Paragraph);
 
-		if (settings.suggestions_channel) {
-			submissionChannel = interaction.guild.channels.cache.get(settings.suggestions_channel);
-		}
-
 		const form = new ModalBuilder().setCustomId("suggestion").setTitle("Suggestion");
-
-		if (!submissionChannel) {
-			interaction.reply({
-				content: "There is no channel set for **suggestions**.\nPlease set one using `/channel set suggestions <channel>`",
-				ephemeral: true
-			});
-			return;
-		}
-
 		const actionRow = new ActionRowBuilder().addComponents([suggestion]);
 
 		form.addComponents([actionRow]);

@@ -7,6 +7,29 @@ module.exports = class DiscordUtils {
 	}
 
 	/**
+	 * Check if the bot has the required permissions
+	 * @param {Interaction} interaction - the interaction
+	 * @param {Array} permissions - the required permissions
+	 * @returns {boolean}
+	 */
+	async insufficientPermissions(interaction, permissions, channel = interaction.channel) {
+		const missingPermissions = permissions.filter(
+			permission => !interaction.guild.me.permissionsIn(channel).has(permission)
+		);
+
+		// prettier-ignore
+		if (missingPermissions[0]) {
+			interaction.reply({
+				content: `I need the following permissions in ${channel} (\`${channel.id}\`):\n\`${missingPermissions.join("` `")}\``,
+				ephemeral: true,
+			});
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Check if a guild member is able to moderate members
 	 * @param {GuildMember} member - the guild member
 	 * @returns {boolean}

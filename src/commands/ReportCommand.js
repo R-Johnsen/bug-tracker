@@ -153,6 +153,28 @@ module.exports = class ReportCommand extends Command {
 			return;
 		}
 
+		const generalPermissions = [
+			"SendMessages",
+			"ViewChannel",
+			"ReadMessageHistory",
+			"EmbedLinks"
+		];
+
+		// prettier-ignore
+		if (await utils.insufficientPermissions(interaction, generalPermissions, submissionChannel)) return;
+
+		if (type === "bug") {
+			const bugPermissions = [
+				"AddReactions",
+				"UseExternalEmojis",
+				"CreatePublicThreads",
+				"ManageThreads"
+			];
+
+			// prettier-ignore
+			if (await utils.insufficientPermissions(interaction, bugPermissions, submissionChannel)) return;
+		}
+
 		components.forEach(component => {
 			const actionRow = new ActionRowBuilder().addComponents([component]);
 			actionRows.push(actionRow);

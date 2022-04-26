@@ -203,19 +203,17 @@ module.exports = class CommandManager {
 			case 1:
 				const moderatorRole = settings.moderator_role;
 
-				if (moderatorRole) {
-					if (!interaction.member.roles.cache.has(moderatorRole)) {
+				if (!(await utils.isModerator(interaction.member))) {
+					if (moderatorRole) {
 						interaction.reply({
 							content: `You must have the <@&${moderatorRole}> role to use this command.`,
 							ephemeral: true
 						});
 						return;
 					}
-				}
 
-				if (!interaction.member.permissions.has("ModerateMembers")) {
 					interaction.reply({
-						content: "You must have the `Moderate Members` permission to use this command.",
+						content: "You must have the `ModerateMembers` role to use this command.",
 						ephemeral: true
 					});
 					return;
@@ -225,19 +223,17 @@ module.exports = class CommandManager {
 			case 2:
 				const administratorRole = settings.administrator_role;
 
-				if (administratorRole) {
-					if (!interaction.member.roles.cache.has(administratorRole)) {
+				if (!(await utils.isAdministrator(interaction.member))) {
+					if (administratorRole) {
 						interaction.reply({
 							content: `You must have the <@&${administratorRole}> role to use this command.`,
 							ephemeral: true
 						});
 						return;
 					}
-				}
 
-				if (!interaction.member.permissions.has("Administrator")) {
 					interaction.reply({
-						content: "You must have the `Administrator` permission to use this command.",
+						content: "You must have the `Administrator` role to use this command.",
 						ephemeral: true
 					});
 					return;
@@ -245,7 +241,7 @@ module.exports = class CommandManager {
 
 				break;
 			case 3:
-				if (interaction.member.id !== interaction.guild.ownerId) {
+				if (!(await utils.isOwner(interaction.member))) {
 					interaction.reply({
 						content: "You must be the owner of this server to use this command.",
 						ephemeral: true

@@ -36,26 +36,18 @@ module.exports = class DiscordUtils {
 	 */
 	async isModerator(member) {
 		const guild = await Guilds.findOne({ id: member.guild.id });
+
 		const administratorRole = guild.administrator_role;
 		const moderatorRole = guild.moderator_role;
 
-		let result = false;
+		if (administratorRole) {
+			if (member.roles.cache.has(administratorRole)) return true;
+		} else if (member.permissions.has("Administrator")) return true;
 
 		if (moderatorRole) {
-			result = member.roles.cache.has(administratorRole);
-		} else {
-			result = member.permissions.has("ModerateMembers");
-		}
+			if (member.roles.cache.has(moderatorRole)) return true;
+		} else if (member.permissions.has("ModerateMembers")) return true;
 
-		if (result) return true;
-
-		if (administratorRole) {
-			result = member.roles.cache.has(administratorRole);
-		} else {
-			result = member.permissions.has("Administrator");
-		}
-
-		if (result) return true;
 		return member.id === member.guild.ownerId || config.users.developers.includes(member.id);
 	}
 
@@ -68,15 +60,10 @@ module.exports = class DiscordUtils {
 		const guild = await Guilds.findOne({ id: member.guild.id });
 		const administratorRole = guild.administrator_role;
 
-		let result = false;
-
 		if (administratorRole) {
-			result = member.roles.cache.has(administratorRole);
-		} else {
-			result = member.permissions.has("Administrator");
-		}
+			if (member.roles.cache.has(administratorRole)) return true;
+		} else if (member.permissions.has("Administrator")) return true;
 
-		if (result) return true;
 		return member.id === member.guild.ownerId || config.users.developers.includes(member.id);
 	}
 

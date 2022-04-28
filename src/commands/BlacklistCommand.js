@@ -65,6 +65,14 @@ module.exports = class BlacklistCommand extends Command {
 	 * @returns {Promise<void|any>}
 	 */
 	async execute(interaction) {
+		if (!(await utils.isDeveloper(interaction.member))) {
+			interaction.reply({
+				content: "This command can only be used by the developer",
+				ephemeral: true
+			});
+			return;
+		}
+
 		const action = interaction.options.getString("action");
 		const type = interaction.options.getString("type");
 		const id = interaction.options.getString("id");

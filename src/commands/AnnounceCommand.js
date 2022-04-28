@@ -22,6 +22,14 @@ module.exports = class AnnounceCommand extends Command {
 	 * @returns {Promise<void|any>}
 	 */
 	async execute(interaction) {
+		if (!(await utils.isDeveloper(interaction.member))) {
+			interaction.reply({
+				content: "This command can only be used by the developer",
+				ephemeral: true
+			});
+			return;
+		}
+
 		const title = new TextInputBuilder()
 
 			.setCustomId("title")

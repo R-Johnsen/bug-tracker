@@ -39,6 +39,14 @@ module.exports = class EvalCommand extends Command {
 		const codeToEvaluate = interaction.options.getString("code");
 		const publicResult = interaction.options.getBoolean("public") ?? false;
 
+		if (!(await utils.isDeveloper(interaction.member))) {
+			interaction.reply({
+				content: "This command can only be used by the developer",
+				ephemeral: true
+			});
+			return;
+		}
+
 		// Prevent evaluation of environmental code
 		if (codeToEvaluate.match(/(env|DISCORD_TOKEN|DB_ENCRYPTION_KEY|NDA_FORM_KEY)/gi)) {
 			return interaction.reply({

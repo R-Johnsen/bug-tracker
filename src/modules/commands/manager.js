@@ -1,4 +1,4 @@
-const { Collection, EmbedBuilder, ApplicationCommandPermissionType } = require("discord.js");
+const { Collection, EmbedBuilder } = require("discord.js");
 const Guilds = require("./../../mongodb/models/guilds");
 const Dev = require("./../../mongodb/models/dev");
 
@@ -63,70 +63,12 @@ module.exports = class CommandManager {
 				this.client.commands.commands.map(command => command.build(guild))
 			);
 			await this.client.application.commands.set(commands, guild.id);
-			await this.updatePermissions(guild);
 			log.success(
 				`Published ${this.client.commands.commands.size} commands to "${guild.name}"`
 			);
 		} catch {
 			log.warn("An error occurred whilst publishing the commands");
 		}
-	}
-
-	async updatePermissions(guild) {
-		guild.commands.fetch().then(async commands => {
-			const permissions = [];
-
-			const { developers } = config.users;
-
-			commands.forEach(async globalCommand => {
-				const commandPermissions = [];
-				const command = this.client.commands.commands.get(globalCommand.name);
-
-				/** Permission Levels
-				 * 0 - Everyone
-				 * 1 - Moderators
-				 * 2 - Administrators
-				 * 3 - Server Owner
-				 * 4 - Developers
-				 */
-
-				if (command.permission_level === 4) {
-					developers.forEach(userId => {
-						commandPermissions.push({
-							id: userId,
-							permission: true,
-							type: ApplicationCommandPermissionType.User
-						});
-					});
-
-					commandPermissions.push({
-						id: guild.roles.everyone.id,
-						permission: false,
-						type: ApplicationCommandPermissionType.Role
-					});
-				}
-
-				permissions.push({
-					id: globalCommand.id,
-					permissions: commandPermissions
-				});
-			});
-
-			log.debug(
-				`Command permissions for "${guild.name}"`,
-				require("util").inspect(permissions, {
-					colors: true,
-					depth: 10
-				})
-			);
-
-			try {
-				await guild.commands.permissions.set({ fullPermissions: permissions });
-			} catch (error) {
-				log.warn("An error occurred whilst updating command permissions");
-				log.error(error);
-			}
-		});
 	}
 
 	/**

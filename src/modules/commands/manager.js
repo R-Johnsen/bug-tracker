@@ -192,6 +192,16 @@ module.exports = class CommandManager {
 				}
 
 				break;
+			case 4:
+				if (!(await utils.isDeveloper(interaction.member))) {
+					interaction.reply({
+						content: "You must be the developer of the bot to use this command.",
+						ephemeral: true
+					});
+					return;
+				}
+
+				break;
 		}
 
 		if (command.cooldown) {

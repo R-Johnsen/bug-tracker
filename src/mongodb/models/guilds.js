@@ -18,6 +18,17 @@ const guildSchema = new Schema({
 		type: Array,
 		default: []
 	},
+	auto: {
+		type: Object,
+		default: {
+			thread: {
+				bugs: false,
+				suggestions: false
+			},
+			delete: [],
+			role: []
+		}
+	},
 	bugs_channel: {
 		type: String,
 		default: null

@@ -187,6 +187,17 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							log.warn("No reaction perms");
 						}
 
+						if (settings.auto.thread.bugs) {
+							message.startThread({
+								name:
+									summary.length > 97
+										? `${summary.slice(0, 97)}...`
+										: summary,
+								autoArchiveDuration: "MAX",
+								reason: "Started a discussion thread for a report/suggestion"
+							});
+						}
+
 						await Guilds.updateOne(
 							{ id: interaction.guildId },
 							{
@@ -348,6 +359,17 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							log.warn("No reaction perms");
 						}
 
+						if (settings.auto.thread.suggestions) {
+							message.startThread({
+								name:
+									suggestion.length > 97
+										? `${suggestion.slice(0, 97)}...`
+										: suggestion,
+								autoArchiveDuration: "MAX",
+								reason: "Started a discussion thread for a report/suggestion"
+							});
+						}
+
 						await Guilds.updateOne(
 							{ id: interaction.guildId },
 							{
@@ -454,15 +476,6 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 					interaction.reply({
 						content: `You need the <@&${settings.moderator_role}> role to use this interaction.`,
-						ephemeral: true
-					});
-					return;
-				}
-
-				// prettier-ignore
-				if (!interaction.guild.me.permissionsIn(interaction.channel).has("CreatePublicThreads")) {
-					interaction.reply({
-						content: "I don't have the permissions to create a thread (`CreatePublicThreads`)",
 						ephemeral: true
 					});
 					return;

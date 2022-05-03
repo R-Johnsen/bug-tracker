@@ -8,6 +8,6 @@ module.exports = class GuildMemberAddEventListener extends EventListener {
 
 	async execute(member) {
 		const settings = await Guilds.findOne({ id: member.guild.id });
-		if (settings.auto_role) member.roles.add(settings.auto_role);
+		if (settings.auto.role.length > 0) member.roles.add(settings.auto.role);
 	}
 };

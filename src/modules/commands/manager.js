@@ -143,7 +143,7 @@ module.exports = class CommandManager {
 		// Manage the permission level
 		switch (command.permission_level) {
 			case 1:
-				const moderatorRole = settings.moderator_role;
+				const moderatorRole = settings.roles.moderator;
 
 				if (!(await utils.isModerator(interaction.member))) {
 					if (moderatorRole) {
@@ -163,7 +163,7 @@ module.exports = class CommandManager {
 
 				break;
 			case 2:
-				const administratorRole = settings.administrator_role;
+				const administratorRole = settings.roles.administrator;
 
 				if (!(await utils.isAdministrator(interaction.member))) {
 					if (administratorRole) {

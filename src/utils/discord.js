@@ -35,10 +35,10 @@ module.exports = class DiscordUtils {
 	 * @returns {boolean}
 	 */
 	async isModerator(member) {
-		const guild = await Guilds.findOne({ id: member.guild.id });
+		const settings = await Guilds.findOne({ id: member.guild.id });
 
-		const administratorRole = guild.administrator_role;
-		const moderatorRole = guild.moderator_role;
+		const administratorRole = settings.roles.administrator;
+		const moderatorRole = settings.roles.moderator;
 
 		if (administratorRole) {
 			if (member.roles.cache.has(administratorRole)) return true;
@@ -57,8 +57,8 @@ module.exports = class DiscordUtils {
 	 * @returns {boolean}
 	 */
 	async isAdministrator(member) {
-		const guild = await Guilds.findOne({ id: member.guild.id });
-		const administratorRole = guild.administrator_role;
+		const settings = await Guilds.findOne({ id: member.guild.id });
+		const administratorRole = settings.roles.administrator;
 
 		if (administratorRole) {
 			if (member.roles.cache.has(administratorRole)) return true;

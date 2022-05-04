@@ -32,10 +32,9 @@ module.exports = class ConfigCommand extends Command {
 			archive_channel,
 			bot_updates_channel,
 			suggestions_channel,
-			auto_role,
-			moderator_role,
-			administrator_role,
+			roles,
 			bugs,
+			auto,
 			reports,
 			suggestions
 		} = settings;
@@ -80,17 +79,17 @@ module.exports = class ConfigCommand extends Command {
 				},
 				{
 					name: "Auto Role",
-					value: `${auto_role ? `<@&${auto_role}>` : "None"}`,
+					value: `${auto.role ? `<@&${auto.role.join("> <@&")}>` : "None"}`,
 					inline: true
 				},
 				{
 					name: "Moderator Role",
-					value: `${moderator_role ? `<@&${moderator_role}>` : "None"}`,
+					value: `${roles.moderator ? `<@&${roles.moderator}>` : "None"}`,
 					inline: true
 				},
 				{
 					name: "Administrator Role",
-					value: `${administrator_role ? `<@&${administrator_role}>` : "None"}`,
+					value: `${roles.administrator ? `<@&${roles.administrator}>` : "None"}`,
 					inline: true
 				}
 			]);

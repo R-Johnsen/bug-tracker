@@ -29,6 +29,13 @@ const guildSchema = new Schema({
 			role: []
 		}
 	},
+	roles: {
+		type: Object,
+		default: {
+			moderator: null,
+			administrator: null
+		}
+	},
 	bugs_channel: {
 		type: String,
 		default: null
@@ -46,18 +53,6 @@ const guildSchema = new Schema({
 		default: null
 	},
 	bot_updates_channel: {
-		type: String,
-		default: null
-	},
-	auto_role: {
-		type: String,
-		default: null
-	},
-	moderator_role: {
-		type: String,
-		default: null
-	},
-	administrator_role: {
 		type: String,
 		default: null
 	}

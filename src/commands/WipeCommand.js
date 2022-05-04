@@ -33,12 +33,16 @@ module.exports = class WipeCommand extends Command {
 							value: "suggestion"
 						},
 						{
-							name: "Channels",
+							name: "Channel Configuration",
 							value: "channel"
 						},
 						{
-							name: "Roles",
+							name: "Role Configuration",
 							value: "role"
+						},
+						{
+							name: "Automation",
+							value: "auto"
 						},
 						{
 							name: "Everything",
@@ -86,9 +90,22 @@ module.exports = class WipeCommand extends Command {
 				{ id: interaction.guildId },
 				{
 					$set: {
-						moderator_role: null,
-						administrator_role: null,
-						auto_role: null
+						"roles.moderator": null,
+						"roles.administrator": null
+					}
+				}
+			);
+		}
+
+		if (type === "auto" || type === "all") {
+			await Guilds.updateOne(
+				{ id: interaction.guildId },
+				{
+					$set: {
+						"auto.role": [],
+						"auto.delete": [],
+						"auto.thread.bugs": false,
+						"auto.thread.suggestions": false
 					}
 				}
 			);

@@ -466,7 +466,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				if (await utils.insufficientPermissions(interaction, generalPermissions)) return;
 
 				if (!(await utils.isModerator(interaction.member))) {
-					if (!settings.moderator_role) {
+					if (!settings.roles.moderator) {
 						interaction.reply({
 							content: "You need the `Moderate Members` permission to use this interaction.",
 							ephemeral: true
@@ -475,7 +475,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					}
 
 					interaction.reply({
-						content: `You need the <@&${settings.moderator_role}> role to use this interaction.`,
+						content: `You need the <@&${settings.roles.moderator}> role to use this interaction.`,
 						ephemeral: true
 					});
 					return;
@@ -537,7 +537,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 			// ANCHOR Approve/Reject
 			if (customId === "approve-report" || customId === "reject-report") {
 				if (!(await utils.isModerator(interaction.member))) {
-					if (!settings.moderator_role) {
+					if (!settings.roles.moderator) {
 						interaction.reply({
 							content: "You need the `Moderate Members` permission to use this interaction.",
 							ephemeral: true
@@ -546,7 +546,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					}
 
 					interaction.reply({
-						content: `You need the <@&${settings.moderator_role}> role to use this interaction.`,
+						content: `You need the <@&${settings.roles.moderator}> role to use this interaction.`,
 						ephemeral: true
 					});
 					return;
@@ -640,7 +640,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 			// ANCHOR Archive
 			if (customId === "archive-report") {
 				if (!(await utils.isModerator(interaction.member))) {
-					if (!settings.moderator_role) {
+					if (!settings.roles.moderator) {
 						interaction.reply({
 							content: "You need the `Moderate Members` permission to use this interaction.",
 							ephemeral: true
@@ -649,7 +649,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					}
 
 					interaction.reply({
-						content: `You need the <@&${settings.moderator_role}> role to use this interaction.`,
+						content: `You need the <@&${settings.roles.moderator}> role to use this interaction.`,
 						ephemeral: true
 					});
 					return;

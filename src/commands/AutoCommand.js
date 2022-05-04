@@ -128,9 +128,8 @@ module.exports = class AutoCommand extends Command {
 		if (subCommand === "thread") {
 			const enabled = interaction.options.getBoolean("enabled");
 			const type = interaction.options.getString("type");
-			const channelVariable = `${type}_channel`;
 
-			if (!settings[channelVariable]) {
+			if (!settings.channels[type]) {
 				interaction.reply({
 					content: `There is no channel set for ${type}.`,
 					ephemeral: true
@@ -138,7 +137,7 @@ module.exports = class AutoCommand extends Command {
 				return;
 			}
 
-			const channelId = settings[channelVariable];
+			const channelId = settings.channels[type];
 			const channel = interaction.guild.channels.cache.get(channelId);
 
 			if (!channel) {

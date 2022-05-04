@@ -105,8 +105,8 @@ module.exports = class ReportCommand extends Command {
 				.setValue("")
 				.setStyle(TextInputStyle.Paragraph);
 
-			if (settings.bugs_channel) {
-				submissionChannel = interaction.guild.channels.cache.get(settings.bugs_channel);
+			if (settings.channels.bugs) {
+				submissionChannel = interaction.guild.channels.cache.get(settings.channels.bugs);
 			}
 
 			components.push(summary, description, specs);
@@ -137,8 +137,10 @@ module.exports = class ReportCommand extends Command {
 				.setStyle(TextInputStyle.Paragraph);
 
 			// prettier-ignore
-			if (settings.reports_channel) {
-				submissionChannel = interaction.guild.channels.cache.get(settings.reports_channel);
+			if (settings.channels.reports) {
+				submissionChannel = interaction.guild.channels.cache.get(
+					settings.channels.reports
+				);
 			}
 
 			components.push(summary, reason);

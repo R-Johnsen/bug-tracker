@@ -119,7 +119,7 @@ module.exports = class StatusCommand extends Command {
 			return;
 		}
 
-		const submissionChannel = interaction.guild.channels.cache.get(settings[`${type}_channel`]);
+		const submissionChannel = interaction.guild.channels.cache.get(settings.channels[type]);
 
 		const generalPermissions = [
 			"SendMessages",

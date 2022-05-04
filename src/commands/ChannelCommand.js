@@ -83,8 +83,6 @@ module.exports = class ChannelCommand extends Command {
 		const action = interaction.options.getString("action");
 		const type = interaction.options.getString("type");
 
-		const dbVariable = `${type}_channel`;
-
 		switch (action) {
 			case "set":
 				if (!channel) {
@@ -122,7 +120,7 @@ module.exports = class ChannelCommand extends Command {
 
 				await Guilds.updateOne(
 					{ id: interaction.guildId },
-					{ $set: { [dbVariable]: channel.id } }
+					{ $set: { [`channels.${type}`]: channel.id } }
 				);
 
 				interaction.reply({
@@ -135,7 +133,7 @@ module.exports = class ChannelCommand extends Command {
 			case "reset":
 				await Guilds.updateOne(
 					{ id: interaction.guildId },
-					{ $set: { [dbVariable]: null } }
+					{ $set: { [`channels.${type}`]: null } }
 				);
 
 				interaction.reply({
@@ -147,7 +145,7 @@ module.exports = class ChannelCommand extends Command {
 
 			case "view":
 				const settings = await Guilds.findOne({ id: interaction.guildId });
-				const channelId = settings[dbVariable];
+				const channelId = settings.channels[type];
 
 				// prettier-ignore
 				if (!channelId) {

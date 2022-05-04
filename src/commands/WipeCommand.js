@@ -75,11 +75,11 @@ module.exports = class WipeCommand extends Command {
 				{ id: interaction.guildId },
 				{
 					$set: {
-						bugs_channel: null,
-						reports_channel: null,
-						suggestions_channel: null,
-						archive_channel: null,
-						bot_updates_channel: null
+						"channels.bugs": null,
+						"channels.reports": null,
+						"channels.suggestions": null,
+						"channels.archive": null,
+						"channels.bot_updates": null
 					}
 				}
 			);

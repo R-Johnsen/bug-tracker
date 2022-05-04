@@ -26,18 +26,7 @@ module.exports = class ConfigCommand extends Command {
 	async execute(interaction) {
 		const settings = await Guilds.findOne({ id: interaction.guild.id });
 
-		const {
-			bugs_channel,
-			reports_channel,
-			archive_channel,
-			bot_updates_channel,
-			suggestions_channel,
-			roles,
-			bugs,
-			auto,
-			reports,
-			suggestions
-		} = settings;
+		const { channels, roles, bugs, auto, reports, suggestions } = settings;
 
 		const embed = new EmbedBuilder()
 
@@ -54,27 +43,27 @@ module.exports = class ConfigCommand extends Command {
 				},
 				{
 					name: "Bug Reports Channel",
-					value: `${bugs_channel ? `<#${bugs_channel}>` : "None"}`,
+					value: `${channels.bugs ? `<#${channels.bugs}>` : "None"}`,
 					inline: true
 				},
 				{
 					name: "Player Reports Channel",
-					value: `${reports_channel ? `<#${reports_channel}>` : "None"}`,
+					value: `${channels.reports ? `<#${channels.reports}>` : "None"}`,
 					inline: true
 				},
 				{
 					name: "Suggestions Channel",
-					value: `${suggestions_channel ? `<#${suggestions_channel}>` : "None"}`,
+					value: `${channels.suggestions ? `<#${channels.suggestions}>` : "None"}`,
 					inline: true
 				},
 				{
 					name: "Archive Channel",
-					value: `${archive_channel ? `<#${archive_channel}>` : "None"}`,
+					value: `${channels.archive ? `<#${channels.archive}>` : "None"}`,
 					inline: true
 				},
 				{
 					name: "Bot Updates Channel",
-					value: `${bot_updates_channel ? `<#${bot_updates_channel}>` : "None"}`,
+					value: `${channels.bot_updates ? `<#${channels.bot_updates}>` : "None"}`,
 					inline: true
 				},
 				{

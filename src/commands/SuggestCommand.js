@@ -25,7 +25,9 @@ module.exports = class SuggestCommand extends Command {
 	 */
 	async execute(interaction) {
 		const settings = await Guilds.findOne({ id: interaction.guildId });
-		const submissionChannel = interaction.guild.channels.cache.get(settings.suggestions_channel);
+		const submissionChannel = interaction.guild.channels.cache.get(
+			settings.channels.suggestions
+		);
 
 		if (!submissionChannel) {
 			interaction.reply({

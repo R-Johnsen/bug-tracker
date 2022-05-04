@@ -85,7 +85,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 					.setTimestamp();
 
 				const publishingGuilds = await Guilds.find({
-					bot_updates_channel: { $ne: null }
+					"channels.bot_updates": { $ne: null }
 				});
 
 				interaction.reply({
@@ -95,7 +95,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 
 				for (const item of publishingGuilds) {
 					const announcementChannel = this.client.channels.cache.get(
-						item.bot_updates_channel
+						item.channels.bot_updates
 					);
 
 					if (announcementChannel) {
@@ -112,7 +112,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 			// ANCHOR Report Bug
 			if (customId.startsWith("report-bug")) {
 				const submissionChannel = interaction.guild.channels.cache.get(
-					settings.bugs_channel
+					settings.channels.bugs
 				);
 
 				if (!submissionChannel) {
@@ -225,7 +225,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 			// ANCHOR Report Player
 			if (customId === "report-player") {
 				const submissionChannel = interaction.guild.channels.cache.get(
-					settings.reports_channel
+					settings.channels.reports
 				);
 
 				if (!submissionChannel) {
@@ -301,7 +301,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 			// ANCHOR Suggestion
 			if (customId === "suggestion") {
 				const submissionChannel = interaction.guild.channels.cache.get(
-					settings.suggestions_channel
+					settings.channels.suggestions
 				);
 
 				if (!submissionChannel) {
@@ -396,7 +396,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				const type = customId.split("-")[3];
 
 				// prettier-ignore
-				const channel = interaction.guild.channels.cache.get(settings[`${type}_channel`]);
+				const channel = interaction.guild.channels.cache.get(settings.channels[type]);
 
 				if (!channel) {
 					interaction.reply({
@@ -656,7 +656,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 				}
 
 				const archiveChannel = interaction.guild.channels.cache.get(
-					settings.archive_channel
+					settings.channels.archive
 				);
 
 				if (!archiveChannel) {

@@ -36,25 +36,15 @@ const guildSchema = new Schema({
 			administrator: null
 		}
 	},
-	bugs_channel: {
-		type: String,
-		default: null
-	},
-	reports_channel: {
-		type: String,
-		default: null
-	},
-	suggestions_channel: {
-		type: String,
-		default: null
-	},
-	archive_channel: {
-		type: String,
-		default: null
-	},
-	bot_updates_channel: {
-		type: String,
-		default: null
+	channels: {
+		type: Object,
+		default: {
+			bugs: null,
+			reports: null,
+			suggestions: null,
+			archive: null,
+			bot_updates: null
+		}
 	}
 });
 

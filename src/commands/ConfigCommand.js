@@ -68,7 +68,9 @@ module.exports = class ConfigCommand extends Command {
 				},
 				{
 					name: "Auto Role",
-					value: `${auto.role ? `<@&${auto.role.join("> <@&")}>` : "None"}`,
+					value: `${
+						auto.role.length > 0 ? `<@&${auto.role.join("> <@&")}>` : "None"
+					}`,
 					inline: true
 				},
 				{
@@ -80,6 +82,13 @@ module.exports = class ConfigCommand extends Command {
 					name: "Administrator Role",
 					value: `${roles.administrator ? `<@&${roles.administrator}>` : "None"}`,
 					inline: true
+				},
+				{
+					name: "Automatic Message Deletion",
+					value: `${
+						auto.delete.length > 0 ? `<#${auto.delete.join("> <#")}>` : "None"
+					}`,
+					inline: false
 				}
 			]);
 

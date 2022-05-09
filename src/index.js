@@ -58,8 +58,7 @@ class Bot extends Client {
 				Partials.ThreadMember,
 				Partials.GuildScheduledEvent,
 				Partials.User
-			],
-			presence: DiscordUtils.selectPresence()
+			]
 		});
 
 		(async () => {

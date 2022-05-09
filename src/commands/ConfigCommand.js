@@ -69,7 +69,7 @@ module.exports = class ConfigCommand extends Command {
 				{
 					name: "Auto Role",
 					value: `${
-						auto.role.length > 0 ? `<@&${auto.role.join("> <@&")}>` : "None"
+						auto.roles.length > 0 ? `<@&${auto.roles.join("> <@&")}>` : "None"
 					}`,
 					inline: true
 				},

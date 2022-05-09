@@ -10,22 +10,12 @@ module.exports = class ReadyEventListener extends EventListener {
 	}
 
 	async execute() {
-		log.success(
-			`Connected to Discord as "${this.client.user.tag}" in ${this.client.guilds.cache.size} servers`
-		);
+		// prettier-ignore
+		log.success(`Connected to Discord as "${this.client.user.tag}" in ${this.client.guilds.cache.size} servers`);
 		log.info("Loading commands");
 
 		this.client.commands.load();
 		this.client.commands.publish();
-
-		// Presence
-		if (config.presence.options.length > 1) {
-			const { selectPresence } = require("../utils/discord");
-			setInterval(() => {
-				const presence = selectPresence();
-				this.client.user.setPresence(presence);
-			}, config.presence.duration * 1000);
-		}
 
 		this.client.guilds.cache.forEach(guild => {
 			Guilds.findOne({ id: guild.id }, (err, settings) => {

@@ -187,7 +187,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							log.warn("No reaction perms");
 						}
 
-						if (settings.auto.thread.bugs) {
+						if (settings.auto.threads.bugs) {
 							message.startThread({
 								name:
 									summary.length > 97
@@ -359,7 +359,7 @@ module.exports = class InteractionCreateEventListener extends EventListener {
 							log.warn("No reaction perms");
 						}
 
-						if (settings.auto.thread.suggestions) {
+						if (settings.auto.threads.suggestions) {
 							message.startThread({
 								name:
 									suggestion.length > 97

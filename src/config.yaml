@@ -21,10 +21,3 @@ users:
   developers: 
     - "556206370429599755" # Archasion
     - "697765709580599406" # Archasion 2
-
-presence:
-  randomize: true
-  duration: 60
-  options:
-    - type: PLAYING
-      activity: "/update"

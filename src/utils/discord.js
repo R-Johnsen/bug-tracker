@@ -1,5 +1,4 @@
 const Guilds = require("../mongodb/models/guilds");
-let current_presence = -1;
 
 module.exports = class DiscordUtils {
 	constructor(client) {
@@ -83,29 +82,5 @@ module.exports = class DiscordUtils {
 	 */
 	async isDeveloper(member) {
 		return config.users.developers.includes(member.id);
-	}
-
-	/**
-	 * Select a presence from the config
-	 * @returns {PresenceData}
-	 */
-	static selectPresence() {
-		const { length } = config.presence.options;
-		let num;
-
-		if (length === 0) return {};
-		if (length === 1) num = 0;
-		else if (config.presence.randomize) num = Math.floor(Math.random() * length);
-		else {
-			current_presence += 1;
-			if (current_presence === length) current_presence = 0;
-			num = current_presence;
-		}
-
-		const { activity: name, status, type, url } = config.presence.options[num];
-		return {
-			activities: [{ name, type, url }],
-			status
-		};
 	}
 };

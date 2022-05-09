@@ -102,10 +102,10 @@ module.exports = class WipeCommand extends Command {
 				{ id: interaction.guildId },
 				{
 					$set: {
-						"auto.role": [],
+						"auto.roles": [],
 						"auto.delete": [],
-						"auto.thread.bugs": false,
-						"auto.thread.suggestions": false
+						"auto.threads.bugs": false,
+						"auto.threads.suggestions": false
 					}
 				}
 			);

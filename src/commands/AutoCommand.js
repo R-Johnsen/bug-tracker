@@ -129,20 +129,21 @@ module.exports = class AutoCommand extends Command {
 			const enabled = interaction.options.getBoolean("enabled");
 			const type = interaction.options.getString("type");
 
-			if (!settings.channels[type]) {
+			const channelId = settings.channels[type];
+
+			if (!channelId) {
 				interaction.reply({
-					content: `There is no channel set for ${type}.`,
+					content: `There is no channel set for **${type}**.`,
 					ephemeral: true
 				});
 				return;
 			}
 
-			const channelId = settings.channels[type];
 			const channel = interaction.guild.channels.cache.get(channelId);
 
 			if (!channel) {
 				interaction.reply({
-					content: `The channel for ${type} is not valid.`,
+					content: `The channel for **${type}** is not valid.`,
 					ephemeral: true
 				});
 				return;
@@ -159,7 +160,7 @@ module.exports = class AutoCommand extends Command {
 			if (await utils.insufficientPermissions(interaction, generalPermissions, channel)) return;
 
 			// prettier-ignore
-			if (settings.auto.thread[type] === enabled) {
+			if (settings.auto.threads[type] === enabled) {
 				interaction.reply({
 					content: `The ${type.slice(0, -1)} discussion thread creation is already ${enabled ? "enabled" : "disabled"}.`,
 					ephemeral: true
@@ -168,7 +169,7 @@ module.exports = class AutoCommand extends Command {
 			}
 
 			// prettier-ignore
-			await Guilds.updateOne({ id: interaction.guild.id }, { [`auto.thread.${type}`]: enabled });
+			await Guilds.updateOne({ id: interaction.guild.id }, { [`auto.threads.${type}`]: enabled });
 
 			// prettier-ignore
 			interaction.reply({
@@ -316,7 +317,7 @@ module.exports = class AutoCommand extends Command {
 						return;
 					}
 
-					if (settings.auto.role.includes(role.id)) {
+					if (settings.auto.roles.includes(role.id)) {
 						interaction.reply({
 							content: `The ${role} role is already set to be automatically assigned.`,
 							ephemeral: true
@@ -326,7 +327,7 @@ module.exports = class AutoCommand extends Command {
 
 					await Guilds.updateOne(
 						{ id: interaction.guild.id },
-						{ $push: { "auto.role": role.id } }
+						{ $push: { "auto.roles": role.id } }
 					);
 
 					interaction.reply({
@@ -346,7 +347,7 @@ module.exports = class AutoCommand extends Command {
 						return;
 					}
 
-					if (!settings.auto.role.includes(role.id)) {
+					if (!settings.auto.roles.includes(role.id)) {
 						interaction.reply({
 							content: `The ${role} role is not set to be automatically assigned.`,
 							ephemeral: true
@@ -356,7 +357,7 @@ module.exports = class AutoCommand extends Command {
 
 					await Guilds.updateOne(
 						{ id: interaction.guild.id },
-						{ $pull: { "auto.role": role.id } }
+						{ $pull: { "auto.roles": role.id } }
 					);
 
 					interaction.reply({
@@ -368,7 +369,7 @@ module.exports = class AutoCommand extends Command {
 
 				// ANCHOR View
 				case "view":
-					if (settings.auto.role.length === 0) {
+					if (settings.auto.roles.length === 0) {
 						interaction.reply({
 							content: "There are no roles with automatic assignment on join.",
 							ephemeral: true
@@ -383,7 +384,7 @@ module.exports = class AutoCommand extends Command {
 						.setFields([
 							{
 								name: "Roles",
-								value: `<@&${settings.auto.role.join("> <@&")}>`
+								value: `<@&${settings.auto.roles.join("> <@&")}>`
 							}
 						]);
 

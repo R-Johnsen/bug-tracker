@@ -122,7 +122,7 @@ module.exports = class AutoCommand extends Command {
 	 */
 	async execute(interaction) {
 		const subCommand = interaction.options.getSubcommand();
-		const settings = await Guilds.findOne({ id: interaction.guild.id });
+		const settings = await Guilds.findOne({ id: interaction.guildId });
 
 		// ANCHOR Automatic Thread Creation
 		if (subCommand === "thread") {
@@ -169,7 +169,7 @@ module.exports = class AutoCommand extends Command {
 			}
 
 			// prettier-ignore
-			await Guilds.updateOne({ id: interaction.guild.id }, { [`auto.threads.${type}`]: enabled });
+			await Guilds.updateOne({ id: interaction.guildId }, { [`auto.threads.${type}`]: enabled });
 
 			// prettier-ignore
 			interaction.reply({
@@ -223,7 +223,7 @@ module.exports = class AutoCommand extends Command {
 					}
 
 					await Guilds.updateOne(
-						{ id: interaction.guild.id },
+						{ id: interaction.guildId },
 						{ $push: { "auto.delete": channel.id } }
 					);
 
@@ -253,7 +253,7 @@ module.exports = class AutoCommand extends Command {
 					}
 
 					await Guilds.updateOne(
-						{ id: interaction.guild.id },
+						{ id: interaction.guildId },
 						{ $pull: { "auto.delete": channel.id } }
 					);
 
@@ -326,7 +326,7 @@ module.exports = class AutoCommand extends Command {
 					}
 
 					await Guilds.updateOne(
-						{ id: interaction.guild.id },
+						{ id: interaction.guildId },
 						{ $push: { "auto.roles": role.id } }
 					);
 
@@ -356,7 +356,7 @@ module.exports = class AutoCommand extends Command {
 					}
 
 					await Guilds.updateOne(
-						{ id: interaction.guild.id },
+						{ id: interaction.guildId },
 						{ $pull: { "auto.roles": role.id } }
 					);
 

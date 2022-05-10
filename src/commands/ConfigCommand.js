@@ -24,7 +24,7 @@ module.exports = class ConfigCommand extends Command {
 	 * @returns {Promise<void|any>}
 	 */
 	async execute(interaction) {
-		const settings = await Guilds.findOne({ id: interaction.guild.id });
+		const settings = await Guilds.findOne({ id: interaction.guildId });
 
 		const { channels, roles, bugs, auto, reports, suggestions } = settings;
 
